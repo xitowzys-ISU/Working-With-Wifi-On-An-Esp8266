@@ -1,4 +1,9 @@
 #include <ESP8266WiFi.h>
+#include <WiFiClient.h>
+#include <ESP8266WiFiMulti.h>
+
+ESP8266WiFiMulti wifimulti;
+WiFiClient wificlient;
 
 String ip = "IP UNSET";
 
@@ -20,11 +25,22 @@ bool StartAP() {
   return true;
 }
 
+bool startCLI() {
+  wifimulti.addAP(ssidCLI.c_str(), passwordCLI.c_str());
+  while(wifimulti.run() != WL_CONNECTED) {
+    delay(1);
+  }
+
+  return true;
+}
+
 void WiFi_init(bool mode_ap) {
   if (mode_ap) {
     StartAP();
     ip = WiFi.softAPIP().toString();
   } else {
+    startCLI();
+    ip = WiFi.localIP().toString();
 
   }
 
